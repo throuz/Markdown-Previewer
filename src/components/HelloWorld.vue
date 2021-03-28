@@ -3,8 +3,8 @@
     <textarea
       name=""
       id="editor"
-      cols="100"
-      rows="30"
+      :cols="100"
+      :rows="30"
       v-model="inputContent"
     ></textarea>
     <div id="preview" v-html="outputContent"></div>
