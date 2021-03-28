@@ -1,65 +1,77 @@
 <template>
-  <h1>{{ msg }}</h1>
-
-  <p>
-    Recommended IDE setup:
-    <a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
-    +
-    <a
-      href="https://marketplace.visualstudio.com/items?itemName=octref.vetur"
-      target="_blank"
-    >Vetur</a>
-    or
-    <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
-    (if using
-    <code>&lt;script setup&gt;</code>)
-  </p>
-
-  <p>See <code>README.md</code> for more information.</p>
-
-  <p>
-    <a href="https://vitejs.dev/guide/features.html" target="_blank">Vite Docs</a> |
-    <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
-  </p>
-
-  <button @click="count++">count is: {{ count }}</button>
-  <p>
-    Edit
-    <code>components/HelloWorld.vue</code> to test hot module replacement.
-  </p>
+  <div id="wrap">
+    <textarea
+      name=""
+      id="editor"
+      cols="100"
+      rows="30"
+      v-model="inputContent"
+    ></textarea>
+    <div id="preview" v-html="outputContent"></div>
+  </div>
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue'
+import { ref, defineComponent, watch } from "vue";
+import marked from "marked";
 export default defineComponent({
-  name: 'HelloWorld',
-  props: {
-    msg: {
-      type: String,
-      required: true
-    }
-  },
+  name: "HelloWorld",
   setup: () => {
-    const count = ref(0)
-    return { count }
-  }
-})
+    const count = ref(0);
+    const inputContent = ref("");
+    let outputContent = ref("");
+    marked.setOptions({
+      breaks: true,
+    });
+    inputContent.value = `# header
+
+## sub header
+
+[link](http://example.com/ "Title")
+
+\`inline code\`
+
+    This is a code block.
+
+Unorder list
+*   Red
+*   Green
+*   Blue
+
+Order list
+1.  Bird
+1.  McHale
+1.  Parish
+
+> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+
+![Alt text](https://cn.vitejs.dev/logo.svg)
+
+**bold text**`;
+    outputContent.value = marked(inputContent.value);
+    watch(inputContent, () => {
+      outputContent.value = marked(inputContent.value);
+    });
+
+    return { count, inputContent, outputContent };
+  },
+});
 </script>
 
 <style scoped>
-a {
-  color: #42b983;
+#wrap {
+  display: flex;
+  justify-content: center;
 }
-
-label {
-  margin: 0 0.5em;
-  font-weight: bold;
+textarea {
+  resize: none;
 }
-
-code {
-  background-color: #eee;
-  padding: 2px 4px;
-  border-radius: 4px;
-  color: #304455;
+#preview {
+  border: solid #000;
+  width: 723px;
+  box-sizing: border-box;
+  padding: 30px;
 }
 </style>
